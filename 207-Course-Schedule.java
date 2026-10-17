@@ -3,38 +3,29 @@ class Solution {
       List<List<Integer>> adj= new ArrayList<>();
       List<Integer> ans= new ArrayList<>();
 
-       int []ind= new int [n];
           for (int i = 0; i < n; i++) {
             adj.add(new ArrayList<>());
         }
         for (int[] pr : prerequisites) {
-            int c0 = pr[0];
-            int c1 = pr[1];
-
-            adj.get(c1).add(c0);
-            ind[c0]++;
+            adj.get(pr[1]).add(pr[0]);    
         }
-       Queue<Integer> que= new LinkedList<>();
-       for(int i=0;i<n;i++){
-        if(ind[i]==0)que.offer(i);
-       }
-       while(!que.isEmpty()){
-        int curr= que.poll();
-        ans.add(curr);
+       boolean [] vis= new boolean[n];
+       boolean [] path= new boolean[n];
+  for(int i=0;i<n;i++){
+    if(!vis[i] && dfs(i, adj, vis, path))return false;
+  }
+  return true;
+ 
 
-            for (int next : adj.get(curr)) {
-                ind[next]--;
 
-            if(ind[next]==0){
-                que.offer(next);
-            }
-
-          }
+    }
+    public boolean dfs(int i, List<List<Integer>> adj, boolean[] vis, boolean[] path){
+        vis[i]=path[i]= true;
+        for(int next: adj.get(i)){
+            if(!vis[next] && dfs(next,adj,vis,path))return true;
+            else if(path[next])return true;
         }
-
-       
-    
-    return ans.size()==n;
-
+        path[i]= false;
+        return false;
     }
 }
